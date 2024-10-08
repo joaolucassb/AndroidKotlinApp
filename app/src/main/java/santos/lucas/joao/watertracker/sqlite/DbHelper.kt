@@ -9,10 +9,10 @@ class DbHelper(context: Context): SQLiteOpenHelper(context, DB_NAME, null, DB_VE
     companion object {
         const val DB_NAME = "water_tracker.db"
         const val DB_VERSION = 1
-        const val TABLE_ENTRIES = "entries"
+        const val TABLE_CONSUMPTION = "consumption"
         const val ID = "_id"
         const val AMOUNT = "amount"
-        const val TIMESTAMP = "timestamp"
+        const val DATE = "date"
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
@@ -20,12 +20,12 @@ class DbHelper(context: Context): SQLiteOpenHelper(context, DB_NAME, null, DB_VE
                 "%s INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "%s INTEGER" +
                 "%s INTEGER)",
-            TABLE_ENTRIES, ID, AMOUNT, TIMESTAMP)
+            TABLE_CONSUMPTION, ID, AMOUNT, DATE)
         db?.execSQL(sql)
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        db?.execSQL("DROP TABLE IF EXISTS $TABLE_ENTRIES")
+        db?.execSQL("DROP TABLE IF EXISTS $TABLE_CONSUMPTION")
         onCreate(db)
     }
 }
