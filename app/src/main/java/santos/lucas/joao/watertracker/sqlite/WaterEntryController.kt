@@ -4,27 +4,27 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 
-data class WaterEntry(val id: Int, val amount: Int, val date: Int)
+data class WaterEntry(val id: Int, val amount: Int, val date: String)
 
-class WaterEntryController private constructor(context: Context) {
+class WaterEntryController public constructor(context: Context) {
 
     private val database: DbHelper = DbHelper(context)
+    private val writableDatabase = database.writableDatabase
+    private val readableDatabase  = database.readableDatabase
 
-    fun insertEntry(amount: Int): String {
-        val db = database.writableDatabase
+    fun insertEntry(entry: WaterEntry): String {
         val values = ContentValues()
-        values.put(DbHelper.AMOUNT, amount)
-        values.put(DbHelper.DATE, System.currentTimeMillis())
+        values.put(DbHelper.AMOUNT, entry.amount)
+        values.put(DbHelper.DATE, entry.date)
 
-        val result = db.insert(DbHelper.TABLE_CONSUMPTION, null, values)
-        db.close()
+        val result = writableDatabase.insert(DbHelper.TABLE_CONSUMPTION, null, values)
+        writableDatabase.close()
         return if (result == -1L) "Error inserting record" else "Record inserted successfully"
     }
 
     fun getAllEntries(): List<WaterEntry> {
         val entries = mutableListOf<WaterEntry>()
-        val db = database.readableDatabase
-        val cursor = db.query(
+        val cursor = readableDatabase.query(
             DbHelper.TABLE_CONSUMPTION,
             null, null, null, null, null,
             "${DbHelper.DATE} DESC"
@@ -36,21 +36,20 @@ class WaterEntryController private constructor(context: Context) {
                     val entry = WaterEntry(
                         id = it.getInt(it.getColumnIndexOrThrow(DbHelper.ID)),
                         amount = it.getColumnIndex(DbHelper.AMOUNT),
-                        date = it.getColumnIndex(DbHelper.DATE)
+                        date = it.getColumnIndex(DbHelper.DATE).toString()
                     )
                     entries.add(entry)
                 } while (it.moveToNext())
             }
         }
 
-        db.close()
+        readableDatabase.close()
         return entries
     }
 
     fun getEntryById(id: Int): WaterEntry? {
-        val db = database.readableDatabase
         val selectQuery = "SELECT * FROM ${DbHelper.TABLE_CONSUMPTION} WHERE ${DbHelper.ID} = ?"
-        val cursor: Cursor = db.rawQuery(selectQuery, arrayOf(id.toString()))
+        val cursor: Cursor = readableDatabase.rawQuery(selectQuery, arrayOf(id.toString()))
         var entry: WaterEntry? = null
 
         cursor.use {
@@ -58,34 +57,32 @@ class WaterEntryController private constructor(context: Context) {
                 entry = WaterEntry(
                     id = it.getInt(it.getColumnIndexOrThrow(DbHelper.ID)),
                     amount = it.getInt(it.getColumnIndexOrThrow(DbHelper.AMOUNT)),
-                    date = it.getInt(it.getColumnIndexOrThrow(DbHelper.DATE))
+                    date = it.getString(it.getColumnIndexOrThrow(DbHelper.DATE))
                 )
             }
         }
 
-        db.close()
+        readableDatabase.close()
         return entry
     }
 
     fun updateEntry(entry: WaterEntry): Boolean {
-        val db = database.writableDatabase
         val values = ContentValues().apply {
             put(DbHelper.AMOUNT, entry.amount)
             put(DbHelper.DATE, System.currentTimeMillis())
         }
         val whereClause = "${DbHelper.ID} = ?"
         val whereArgs = arrayOf(entry.id.toString())
-        val updatedRows = db.update(DbHelper.TABLE_CONSUMPTION, values, whereClause, whereArgs)
-        db.close()
+        val updatedRows = writableDatabase.update(DbHelper.TABLE_CONSUMPTION, values, whereClause, whereArgs)
+        writableDatabase.close()
         return updatedRows > 0
     }
 
     fun deleteEntry(id: Int): Boolean {
-        val db = database.writableDatabase
         val whereClause = "${DbHelper.ID} = ?"
         val whereArgs = arrayOf(id.toString())
-        val deletedRows = db.delete(DbHelper.TABLE_CONSUMPTION, whereClause, whereArgs)
-        db.close()
+        val deletedRows = writableDatabase.delete(DbHelper.TABLE_CONSUMPTION, whereClause, whereArgs)
+        writableDatabase.close()
         return deletedRows > 0
     }
 }

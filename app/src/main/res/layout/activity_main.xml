@@ -18,7 +18,7 @@
         tools:ignore="Autofill" />
 
     <Button
-        android:id="@+id/addButton"
+        android:id="@+id/addEntryBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:minWidth="250dp"
@@ -26,7 +26,7 @@
         android:layout_marginTop="16dp"/>
 
     <Button
-        android:id="@+id/historyButton"
+        android:id="@+id/historyBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:minWidth="250dp"

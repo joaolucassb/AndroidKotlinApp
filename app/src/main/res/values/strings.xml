@@ -3,4 +3,5 @@
     <string name="waterAmount">Quantidade de água (ml)</string>
     <string name="addEntry">Adicionar Consumo</string>
     <string name="showHistory">Ver Histórico</string>
+    <string name="consumpiton_added">Consumo adicionado!</string>
 </resources>
