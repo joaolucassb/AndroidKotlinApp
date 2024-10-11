@@ -6,7 +6,7 @@ import android.database.Cursor
 
 data class WaterEntry(val id: Int, val amount: Int, val date: String)
 
-class WaterEntryController public constructor(context: Context) {
+class WaterEntryController constructor(context: Context) {
 
     private val database: DbHelper = DbHelper(context)
     private val writableDatabase = database.writableDatabase
@@ -19,32 +19,21 @@ class WaterEntryController public constructor(context: Context) {
 
         val result = writableDatabase.insert(DbHelper.TABLE_CONSUMPTION, null, values)
         writableDatabase.close()
-        return if (result == -1L) "Error inserting record" else "Record inserted successfully"
+        return if (result == -1L) "Erro ao inserir consumdo!" else "Consumo de ${values.get(DbHelper.AMOUNT)} adicionado com sucesso!"
     }
 
-    fun getAllEntries(): List<WaterEntry> {
+    fun getAllEntries(): Cursor {
         val entries = mutableListOf<WaterEntry>()
+        val fields = arrayOf(DbHelper.ID, DbHelper.AMOUNT, DbHelper.DATE)
         val cursor = readableDatabase.query(
             DbHelper.TABLE_CONSUMPTION,
-            null, null, null, null, null,
+            fields, null, null, null, null,
             "${DbHelper.DATE} DESC"
         )
 
-        cursor.use {
-            if (it.moveToFirst()) {
-                do {
-                    val entry = WaterEntry(
-                        id = it.getInt(it.getColumnIndexOrThrow(DbHelper.ID)),
-                        amount = it.getColumnIndex(DbHelper.AMOUNT),
-                        date = it.getColumnIndex(DbHelper.DATE).toString()
-                    )
-                    entries.add(entry)
-                } while (it.moveToNext())
-            }
-        }
 
-        readableDatabase.close()
-        return entries
+        cursor.moveToFirst()
+        return cursor
     }
 
     fun getEntryById(id: Int): WaterEntry? {

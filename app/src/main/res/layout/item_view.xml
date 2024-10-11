@@ -10,13 +10,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="0000-00-00"
+        android:text=""
         android:textSize="16sp"/>
 
     <TextView
         android:id="@+id/amountTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="250 ml"
+        android:text=""
         android:textSize="16sp" />
 </LinearLayout>
