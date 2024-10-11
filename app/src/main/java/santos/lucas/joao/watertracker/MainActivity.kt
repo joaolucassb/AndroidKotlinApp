@@ -1,8 +1,10 @@
 package santos.lucas.joao.watertracker
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import santos.lucas.joao.watertracker.activities.HistoryActivity
 import santos.lucas.joao.watertracker.databinding.ActivityMainBinding
 import santos.lucas.joao.watertracker.sqlite.WaterEntry
 import santos.lucas.joao.watertracker.sqlite.WaterEntryController
@@ -33,6 +35,11 @@ class MainActivity : ComponentActivity() {
 
                 binding.amountEditText.text.clear()
             }
+        }
+
+        binding.historyBtn.setOnClickListener {
+            val intent = Intent(this, HistoryActivity::class.java)
+            startActivity(intent)
         }
     }
 
