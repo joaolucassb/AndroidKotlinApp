@@ -23,7 +23,6 @@ class WaterEntryController constructor(context: Context) {
     }
 
     fun getAllEntries(): Cursor {
-        val entries = mutableListOf<WaterEntry>()
         val fields = arrayOf(DbHelper.ID, DbHelper.AMOUNT, DbHelper.DATE)
         val cursor = readableDatabase.query(
             DbHelper.TABLE_CONSUMPTION,
@@ -36,23 +35,15 @@ class WaterEntryController constructor(context: Context) {
         return cursor
     }
 
-    fun getEntryById(id: Int): WaterEntry? {
-        val selectQuery = "SELECT * FROM ${DbHelper.TABLE_CONSUMPTION} WHERE ${DbHelper.ID} = ?"
-        val cursor: Cursor = readableDatabase.rawQuery(selectQuery, arrayOf(id.toString()))
-        var entry: WaterEntry? = null
+    fun getEntryById(id: Int): Cursor {
+        val fields = arrayOf(DbHelper.ID, DbHelper.AMOUNT, DbHelper.DATE)
+        val where = "${DbHelper.ID} = ?"
+        val whereArgs = arrayOf(id.toString())
+        val cursor = readableDatabase.query(DbHelper.TABLE_CONSUMPTION, fields, where, whereArgs, null,
+            null, null, null)
 
-        cursor.use {
-            if (it.moveToFirst()) {
-                entry = WaterEntry(
-                    id = it.getInt(it.getColumnIndexOrThrow(DbHelper.ID)),
-                    amount = it.getInt(it.getColumnIndexOrThrow(DbHelper.AMOUNT)),
-                    date = it.getString(it.getColumnIndexOrThrow(DbHelper.DATE))
-                )
-            }
-        }
-
-        readableDatabase.close()
-        return entry
+        cursor.moveToFirst()
+        return cursor
     }
 
     fun updateEntry(entry: WaterEntry): Boolean {
