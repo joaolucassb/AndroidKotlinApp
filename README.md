@@ -1,3 +1,8 @@
-## WaterTracker
+## Projeto Para Estudos sobre Android/Kotlin
 
-- Projeto de Extensão da disciplina Programação Para Dispositivos Móveis em Android na Faculdade Estácio do Recife.
+- Destinado a estudo onde aplico técnicas e conceitos aprendidos na disciplina Programação Para Dispositivos Móveis em Android:
+- Conceitos Abordados:
+  1 - Criação de Activities.
+  2 - Usando Intent para comunicação de diferentes Activities.
+  3 - Implementação de RecyclerView.
+  4 - Armazenamento e recuperação de dados com SQLite.
