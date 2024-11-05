@@ -46,7 +46,7 @@ class WaterEntryController constructor(context: Context) {
         return cursor
     }
 
-    fun updateEntry(entry: WaterEntry): Boolean {
+    fun updateEntry(entry: WaterEntry): String {
         val values = ContentValues().apply {
             put(DbHelper.AMOUNT, entry.amount)
             put(DbHelper.DATE, System.currentTimeMillis())
@@ -55,14 +55,14 @@ class WaterEntryController constructor(context: Context) {
         val whereArgs = arrayOf(entry.id.toString())
         val updatedRows = writableDatabase.update(DbHelper.TABLE_CONSUMPTION, values, whereClause, whereArgs)
         writableDatabase.close()
-        return updatedRows > 0
+        return if (updatedRows > 0) "Consumo Atualizaco com sucesso!" else "Erro ao atualizar consumo."
     }
 
-    fun deleteEntry(id: Int): Boolean {
+    fun deleteEntry(id: Int): String {
         val whereClause = "${DbHelper.ID} = ?"
         val whereArgs = arrayOf(id.toString())
         val deletedRows = writableDatabase.delete(DbHelper.TABLE_CONSUMPTION, whereClause, whereArgs)
         writableDatabase.close()
-        return deletedRows > 0
+        return if (deletedRows > 0) "Consumo Deletado com sucesso!" else "Erro ao deletar consumo."
     }
 }
