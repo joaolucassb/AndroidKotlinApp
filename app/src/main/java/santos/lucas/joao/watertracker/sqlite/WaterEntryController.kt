@@ -4,7 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 
-data class WaterEntry(val id: Int, val amount: Int, val date: String)
+data class WaterEntry(val id: Int?, val amount: Int, val date: String)
 
 class WaterEntryController constructor(context: Context) {
 
@@ -18,7 +18,6 @@ class WaterEntryController constructor(context: Context) {
         values.put(DbHelper.DATE, entry.date)
 
         val result = writableDatabase.insert(DbHelper.TABLE_CONSUMPTION, null, values)
-        writableDatabase.close()
         return if (result == -1L) "Erro ao inserir consumdo!" else "Consumo de ${values.get(DbHelper.AMOUNT)} adicionado com sucesso!"
     }
 
@@ -29,9 +28,8 @@ class WaterEntryController constructor(context: Context) {
             fields, null, null, null, null,
             "${DbHelper.DATE} DESC"
         )
-
-
         cursor.moveToFirst()
+
         return cursor
     }
 
@@ -43,7 +41,23 @@ class WaterEntryController constructor(context: Context) {
             null, null, null)
 
         cursor.moveToFirst()
+
         return cursor
+    }
+
+    fun getConsumptionForDate(date: String): Int {
+        var totalConsumption = 0
+        val cursor = readableDatabase.rawQuery(
+            "SELECT SUM(${DbHelper.AMOUNT}) FROM ${DbHelper.TABLE_CONSUMPTION} WHERE ${DbHelper.DATE} = ?",
+            arrayOf(date)
+        )
+
+        if (cursor.moveToFirst()) {
+            totalConsumption = cursor.getInt(0)
+        }
+        cursor.close()
+
+        return totalConsumption
     }
 
     fun updateEntry(entry: WaterEntry): String {
@@ -54,7 +68,7 @@ class WaterEntryController constructor(context: Context) {
         val whereClause = "${DbHelper.ID} = ?"
         val whereArgs = arrayOf(entry.id.toString())
         val updatedRows = writableDatabase.update(DbHelper.TABLE_CONSUMPTION, values, whereClause, whereArgs)
-        writableDatabase.close()
+
         return if (updatedRows > 0) "Consumo Atualizaco com sucesso!" else "Erro ao atualizar consumo."
     }
 
@@ -62,7 +76,7 @@ class WaterEntryController constructor(context: Context) {
         val whereClause = "${DbHelper.ID} = ?"
         val whereArgs = arrayOf(id.toString())
         val deletedRows = writableDatabase.delete(DbHelper.TABLE_CONSUMPTION, whereClause, whereArgs)
-        writableDatabase.close()
+
         return if (deletedRows > 0) "Consumo Deletado com sucesso!" else "Erro ao deletar consumo."
     }
 }

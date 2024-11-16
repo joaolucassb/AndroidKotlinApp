@@ -1,7 +1,9 @@
 package santos.lucas.joao.watertracker
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -21,7 +23,11 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var controller: WaterEntryController
+    private lateinit var waterProgressBar: ProgressBar
 
+    private var dailyGoal = 2000 // Meta diária em ml
+
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -29,16 +35,38 @@ class MainActivity : ComponentActivity() {
 
         controller = WaterEntryController(this)
 
+        waterProgressBar = binding.waterProgressBar
+
+        val currentDate = getCurrentDate()
+        var currentProgress = controller.getConsumptionForDate(currentDate)
+        waterProgressBar.max = dailyGoal
+        updateProgressBar(currentProgress)
+
         binding.addEntryBtn.setOnClickListener {
             val amountStr = binding.amountEditText.text.toString()
             if (amountStr.isNotEmpty()) {
-                val amount = amountStr.toInt()
-                val currentDate = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date())
-                val entry = WaterEntry(id = 0, amount = amount, date = currentDate)
-                val result = controller.insertEntry(entry)
-                showToast(result)
+                try {
+                    val amount = amountStr.toInt()
+                    if (amount > 0) {
+                        val entry = WaterEntry(id = null, amount = amount, date = currentDate)
+                        val result = controller.insertEntry(entry)
+                        currentProgress+= amount
+                        updateProgressBar(currentProgress)
+                        showToast(result)
 
-                binding.amountEditText.text.clear()
+                        if (currentProgress >= dailyGoal) {
+                            showToast("Parabéns! Você atingiu sua meta diária de água")
+                            waterProgressBar.progress = 0
+                        }
+                        binding.amountEditText.text.clear()
+                    } else {
+                        showToast("Por favor, insira um valor maior que 0.")
+                    }
+                } catch (e: NumberFormatException) {
+                    showToast("Entrada inválida. Por favor, insira um número.")
+                }
+            } else {
+                showToast("Por favor, insira a quantidade de água consumida.")
             }
         }
 
@@ -48,6 +76,12 @@ class MainActivity : ComponentActivity() {
         }
 
         scheduleReminder()
+    }
+
+    private fun updateProgressBar(currentProgress: Int) {
+        waterProgressBar.progress = currentProgress
+        val totalProgress = (currentProgress.toFloat() / dailyGoal) * 100
+        binding.progressText.text = "Progresso de Consumo = ${totalProgress.toInt()}%"
     }
 
     private fun scheduleReminder() {
@@ -62,6 +96,11 @@ class MainActivity : ComponentActivity() {
     }
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun getCurrentDate(): String {
+        val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+        return dateFormat.format(Date())
     }
 }
 
