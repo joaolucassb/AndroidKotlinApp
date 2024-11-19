@@ -1,4 +1,4 @@
-## Projeto Para Estudos sobre Android/Kotlin
+## Projeto de Extenção Android/Kotlin
 
 - Destinado a estudo onde aplico técnicas e conceitos aprendidos na disciplina Programação Para Dispositivos Móveis em Android:
 - Conceitos Abordados:
