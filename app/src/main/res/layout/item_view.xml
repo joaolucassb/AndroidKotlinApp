@@ -11,12 +11,15 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text=""
-        android:textSize="16sp"/>
+        android:textColor="@color/water_blue"
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/amountTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=""
-        android:textSize="16sp" />
+        android:textColor="@color/water_blue"
+        android:textStyle="bold"
+        android:textSize="20sp" />
 </LinearLayout>
