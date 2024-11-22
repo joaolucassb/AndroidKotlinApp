@@ -8,16 +8,25 @@ O projeto visa integrar diferentes funcionalidades básicas do Android para cria
 
 <h2>Funcionalidades Implementadas</h2>
 
-  <h4>1. Persistência de Dados com SQLite</h4>
-      - Utilização de banco de dados SQLite para armazenamento local e recuperação de informações do aplicativo.
-  <h3>2. Navegação entre Activities com Intents</h3>
-      -	Comunicação entre diferentes telas utilizando Intents explícitas e implícitas.
-  <h3>3. Exibição de Dados com RecyclerView</h3>
-      -	Implementação de uma lista dinâmica e eficiente para exibição dos dados persistidos.
-  <h3>4. Monitoramento do Usuário com ProgressBar</h3>
-      -	Inclusão de uma ProgressBar para acompanhamento visual da evolução de uma tarefa ou progresso do usuário.
-  <h3>5. Envio de Notificações com Worker</h3>
-      - Utilização da classe **Worker** para envio de notificações de forma assíncrona e em segundo plano.
+<h4>1. Persistência de Dados com SQLite</h4>
+
+  * Utilização de banco de dados SQLite para armazenamento local e recuperação de informações do aplicativo.
+
+<h4>2. Navegação entre Activities com Intents</h4>
+
+  *	Comunicação entre diferentes telas utilizando **Intents** explícitas e implícitas.
+
+<h4>3. Exibição de Dados com RecyclerView</h4>
+
+  *	Implementação de uma lista dinâmica e eficiente para exibição dos dados persistidos.
+
+<h4>4. Monitoramento do Usuário com ProgressBar</h4>
+
+  *	Inclusão de uma **ProgressBar** para acompanhamento visual da evolução de uma tarefa ou progresso do usuário.
+
+<h4>5. Envio de Notificações com Worker</h4>
+
+  * Utilização da classe **Worker** para envio de notificações de forma assíncrona e em segundo plano.
 
 <h2>Conceitos Abordados</h2>
 
